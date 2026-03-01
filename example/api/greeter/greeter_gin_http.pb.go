@@ -54,7 +54,16 @@ func _Greeter_SayHello0_HTTP_Handler(srv GreeterHTTPServer) gin.HandlerFunc {
 		}
 		out, err := srv.SayHello(c, &in)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "message": err.Error()})
+			httpCode := http.StatusInternalServerError
+			bizCode := 500
+			if coder, ok := err.(interface {
+				HTTPCode() int
+				BizCode() int
+			}); ok {
+				httpCode = coder.HTTPCode()
+				bizCode = coder.BizCode()
+			}
+			c.JSON(httpCode, gin.H{"code": bizCode, "message": err.Error()})
 			return
 		}
 		c.JSON(http.StatusOK, gin.H{"code": 0, "message": "ok", "data": out})
@@ -77,7 +86,16 @@ func _Greeter_CreateUser0_HTTP_Handler(srv GreeterHTTPServer) gin.HandlerFunc {
 		}
 		out, err := srv.CreateUser(c, &in)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "message": err.Error()})
+			httpCode := http.StatusInternalServerError
+			bizCode := 500
+			if coder, ok := err.(interface {
+				HTTPCode() int
+				BizCode() int
+			}); ok {
+				httpCode = coder.HTTPCode()
+				bizCode = coder.BizCode()
+			}
+			c.JSON(httpCode, gin.H{"code": bizCode, "message": err.Error()})
 			return
 		}
 		c.JSON(http.StatusOK, gin.H{"code": 0, "message": "ok", "data": out})
@@ -109,7 +127,16 @@ func _Greeter_GetUser0_HTTP_Handler(srv GreeterHTTPServer) gin.HandlerFunc {
 		}
 		out, err := srv.GetUser(c, &in)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "message": err.Error()})
+			httpCode := http.StatusInternalServerError
+			bizCode := 500
+			if coder, ok := err.(interface {
+				HTTPCode() int
+				BizCode() int
+			}); ok {
+				httpCode = coder.HTTPCode()
+				bizCode = coder.BizCode()
+			}
+			c.JSON(httpCode, gin.H{"code": bizCode, "message": err.Error()})
 			return
 		}
 		c.JSON(http.StatusOK, gin.H{"code": 0, "message": "ok", "data": out})
