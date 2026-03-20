@@ -7,6 +7,7 @@ package greeter
 
 import (
 	json "encoding/json"
+	errors "errors"
 	gin "github.com/gin-gonic/gin"
 	protojson "google.golang.org/protobuf/encoding/protojson"
 	io "io"
@@ -56,17 +57,26 @@ func _Greeter_SayHello0_HTTP_Handler(srv GreeterHTTPServer) gin.HandlerFunc {
 		if err != nil {
 			httpCode := http.StatusInternalServerError
 			bizCode := 500
-			if coder, ok := err.(interface {
+			msg := err.Error()
+			var coder interface {
 				HTTPCode() int
 				BizCode() int
-			}); ok {
+				Error() string
+			}
+			if errors.As(err, &coder) {
 				httpCode = coder.HTTPCode()
 				bizCode = coder.BizCode()
+				msg = coder.Error()
 			}
-			c.JSON(httpCode, gin.H{"code": bizCode, "message": err.Error()})
+			c.JSON(httpCode, gin.H{"code": bizCode, "message": msg})
 			return
 		}
-		c.JSON(http.StatusOK, gin.H{"code": 0, "message": "ok", "data": out})
+		dataBytes, err := (protojson.MarshalOptions{EmitUnpopulated: true, UseProtoNames: true}).Marshal(out)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "message": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"code": 0, "message": "ok", "data": json.RawMessage(dataBytes)})
 	}
 }
 
@@ -88,17 +98,26 @@ func _Greeter_CreateUser0_HTTP_Handler(srv GreeterHTTPServer) gin.HandlerFunc {
 		if err != nil {
 			httpCode := http.StatusInternalServerError
 			bizCode := 500
-			if coder, ok := err.(interface {
+			msg := err.Error()
+			var coder interface {
 				HTTPCode() int
 				BizCode() int
-			}); ok {
+				Error() string
+			}
+			if errors.As(err, &coder) {
 				httpCode = coder.HTTPCode()
 				bizCode = coder.BizCode()
+				msg = coder.Error()
 			}
-			c.JSON(httpCode, gin.H{"code": bizCode, "message": err.Error()})
+			c.JSON(httpCode, gin.H{"code": bizCode, "message": msg})
 			return
 		}
-		c.JSON(http.StatusOK, gin.H{"code": 0, "message": "ok", "data": out})
+		dataBytes, err := (protojson.MarshalOptions{EmitUnpopulated: true, UseProtoNames: true}).Marshal(out)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "message": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"code": 0, "message": "ok", "data": json.RawMessage(dataBytes)})
 	}
 }
 
@@ -129,16 +148,25 @@ func _Greeter_GetUser0_HTTP_Handler(srv GreeterHTTPServer) gin.HandlerFunc {
 		if err != nil {
 			httpCode := http.StatusInternalServerError
 			bizCode := 500
-			if coder, ok := err.(interface {
+			msg := err.Error()
+			var coder interface {
 				HTTPCode() int
 				BizCode() int
-			}); ok {
+				Error() string
+			}
+			if errors.As(err, &coder) {
 				httpCode = coder.HTTPCode()
 				bizCode = coder.BizCode()
+				msg = coder.Error()
 			}
-			c.JSON(httpCode, gin.H{"code": bizCode, "message": err.Error()})
+			c.JSON(httpCode, gin.H{"code": bizCode, "message": msg})
 			return
 		}
-		c.JSON(http.StatusOK, gin.H{"code": 0, "message": "ok", "data": out})
+		dataBytes, err := (protojson.MarshalOptions{EmitUnpopulated: true, UseProtoNames: true}).Marshal(out)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "message": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"code": 0, "message": "ok", "data": json.RawMessage(dataBytes)})
 	}
 }
